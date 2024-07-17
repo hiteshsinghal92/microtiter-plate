@@ -1,0 +1,11 @@
+/* src/components/Heatmap.css */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(48, 24px); /* 48 columns for 1536 wells */
+  gap: 3px;
+}
+.well {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
