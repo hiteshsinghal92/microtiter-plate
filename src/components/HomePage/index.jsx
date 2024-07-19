@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import DataUpload from "../DataUpload";
 import { parseCSV } from "../../services/csvParser";
 import SpinerLoader from "../common/SpinerLoader";
+import { Button } from "react-bootstrap";
 const HeatMap = lazy(() => import("../HeatMap"));
 const MetricsList = lazy(() => import("../MetricsList"));
 
@@ -15,6 +16,7 @@ const HomePage = () => {
   const [selectedMetric, setSelectedMetric] = useState("");
   const [fileError, setFileError] = useState("");
   const [isFileParse, setIsFileParse] = useState(false);
+  const [isHeatMapShow, setIsHeatMapShow] = useState(false);
 
   const handleDataLoaded = useCallback(async (csvData) => {
     setFileError("");
@@ -54,21 +56,36 @@ const HomePage = () => {
   const heatMap = useMemo(
     () => (
       <Suspense fallback={<SpinerLoader />}>
-        <HeatMap data={data} selectedMetric={selectedMetric} />
+        <HeatMap data={data} selectedMetric={selectedMetric} metrics={metrics} />
       </Suspense>
     ),
     [data, selectedMetric]
   );
 
 
+  const resetHeatmapData = () => {
+    setFileError("");
+    setData([]);
+    setSelectedMetric("");
+    setMetrics([]);
+    setIsHeatMapShow(false)
+  }
+
+
   return (
     <>
-      <DataUpload onDataLoaded={handleDataLoaded} fileError={fileError} setFileError={setFileError} />
+      {!isHeatMapShow && <DataUpload onDataLoaded={handleDataLoaded} fileError={fileError} setFileError={setFileError} /> } 
       {isFileParse && (
+       <>
         <SpinerLoader />
+       </>
       )}
-      {metrics.length > 0 && metricsList}
-      {data.length > 0 && heatMap}
+      {data.length > 0 && !isHeatMapShow && <div className="text-center"> <Button onClick={() => setIsHeatMapShow(true)}> Show Heatmap </Button></div>}
+      {data.length > 0 && isHeatMapShow && <div className="text-center"> <Button onClick={resetHeatmapData}> Go to Upload File </Button></div>}
+      
+
+      {isHeatMapShow && metrics.length > 0 && metricsList}
+      {isHeatMapShow && data.length > 0 && heatMap}
     </>
   );
 };
