@@ -59,7 +59,7 @@ const HomePage = () => {
         <HeatMap data={data} selectedMetric={selectedMetric} metrics={metrics} />
       </Suspense>
     ),
-    [data, selectedMetric]
+    [data, selectedMetric, metrics]
   );
 
 
@@ -74,15 +74,15 @@ const HomePage = () => {
 
   return (
     <>
-      {!isHeatMapShow && <DataUpload onDataLoaded={handleDataLoaded} fileError={fileError} setFileError={setFileError} /> } 
+      {!isHeatMapShow && <DataUpload onDataLoaded={handleDataLoaded} fileError={fileError} setFileError={setFileError} />}
       {isFileParse && (
-       <>
-        <SpinerLoader />
-       </>
+        <>
+          <SpinerLoader />
+        </>
       )}
       {data.length > 0 && !isHeatMapShow && <div className="text-center"> <Button onClick={() => setIsHeatMapShow(true)}> Show Heatmap </Button></div>}
       {data.length > 0 && isHeatMapShow && <div className="text-center"> <Button onClick={resetHeatmapData}> Go to Upload File </Button></div>}
-      
+
 
       {isHeatMapShow && metrics.length > 0 && metricsList}
       {isHeatMapShow && data.length > 0 && heatMap}
